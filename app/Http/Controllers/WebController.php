@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\District;
 use App\Models\Phongban;
 use App\Models\Nhanvien;
+use App\Models\Province;
 use App\Models\Role;
 use Illuminate\Http\Request;
 
@@ -18,13 +20,20 @@ class WebController extends Controller
         $staffSelect = Nhanvien::all();
         $group = Phongban::with('nhanvien')->get();
         $roles = Role::all();
+        $province = Province::with('district','street','ward')->get();
+        $district = District::with("province")->get();
+        $path = storage_path() . "/json/local.json"; // ie: /var/www/laravel/app/storage/json/filename.json
+        $json = json_decode(file_get_contents($path), true);
+
+//        dd($json);
         return view('welcome',
             [
                 'staff' => $staff,
                 'group' => $group,
                 'staffSelect'=>$staffSelect,
                 'roles'=>$roles,
-                'staffRoleAdmin'=>$staffRoleAdmin
+                'staffRoleAdmin'=>$staffRoleAdmin,
+                'province'=>$json
             ]
         );
     }
@@ -51,6 +60,37 @@ class WebController extends Controller
             'name'=>$request->request->get('name')
         ]);
         return redirect()->to('/');
+
+    }
+
+    public function getLocal(Request $request){
+        $province_id = $request->get('prov_id');
+        $district_id = $request->get('district_id');
+        $path = storage_path() . "/json/local.json";
+        $json = json_decode(file_get_contents($path), true);
+        foreach ($json as $province){
+            if($province_id !=null){
+                if($province['id'] == $province_id){
+                    if($district_id !== null){
+                       foreach ($province['districts'] as $district){
+                           if($district['id'] == $district_id){
+                               return response()->json([
+                                   'province'=>$province,
+                                   'district'=>$district
+                               ]);
+                           }
+                       }
+                    }else{
+                        return response()->json([
+                            'province'=>$province
+                        ]);
+                    }
+
+                }
+            }
+
+        }
+        return null;
 
     }
 }

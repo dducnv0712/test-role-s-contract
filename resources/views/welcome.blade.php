@@ -10,6 +10,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+    <!-- Or for RTL support -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.rtl.min.css" />
     <!-- Styles -->
     <style>
         /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
@@ -412,7 +416,7 @@
         <div class="col-6">
             <div class="card mb-3">
                 <div class="card-header">
-                    Tạo nhóm
+                    Tạo Phòng Ban
                 </div>
                 <div class="card-body">
                     <form action="{{url('/create-group')}}" method="post" class="mb-3">
@@ -475,6 +479,47 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
+            </div>
+            <div class="card mb-3">
+                <div class="card-header">
+                     Địa Chỉ
+                </div>
+                <div class="card-body">
+                    <form action="{{url('/create-role')}}" class="mb-3"
+                          method="post">
+                        <div class="mb-3">
+                            <label for="province">Tỉnh / Thành phố</label>
+                            <select onchange="getProvince(event)" id="province" class="form-select" aria-label="Default select example">
+                                <option selected>Vui lòng chọn Tỉnh / Thành phố</option>
+                                @foreach($province as $province_item)
+                                    <option value="{{$province_item['id']}}">{{$province_item['name']}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="district">Quận / Huyện</label>
+                            <select onchange="handleDistrict(event)" class="form-select" id="district" aria-label="Default select example">
+                                <option selected>Vui lòng chọn Quận / Huyện</option>
+                            </select>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <label for="ward">Xã / Phường</label>
+                                <select class="form-select mb-3" id="ward" aria-label="Default select example">
+                                    <option selected>Vui lòng chọn Xã / Phường</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label for="street">Đường / Phố</label>
+                                <select class="form-select mb-3" id="street" aria-label="Default select example">
+                                    <option selected>Vui lòng chọn</option>
+                                </select>
+                            </div>
+                        </div>
+
+
+                    </form>
                 </div>
             </div>
         </div>
@@ -557,7 +602,6 @@
     <div class="mt-4 border p-6">
         <ul>
             @foreach($group as $item)
-
                 {{--            {{dump($staff)}}--}}
                 <li>
                     <h6 class="text-danger">{{$item->name}}</h6>
@@ -570,10 +614,76 @@
     </div>
 </div>
 </body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
         integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
         crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
         integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
         crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#province').select2({
+            theme: 'bootstrap-5'
+        });
+        $('#district').select2({
+            theme: 'bootstrap-5'
+        });
+        $('#ward').select2({
+            theme: 'bootstrap-5'
+        });
+        $('#street').select2({
+            theme: 'bootstrap-5'
+        });
+    });
+</script>
+<script type="text/javascript">
+    function getProvince(e){
+        e.preventDefault();
+        let province_id = $("#province").val();
+        let districtWrapper = '';
+        $.ajax({
+            type:'GET',
+            url:"{{asset("/local")}}?prov_id="+province_id,
+            success:function(data){
+                var districtData = data.province.districts
+                for (let i =0 ; i < districtData.length ; i++){
+                    districtWrapper += `
+                       <option value="${districtData[i].id}">${districtData[i].name}</option>
+                    `
+                }
+                $("#district").html(districtWrapper);
+            }
+        });
+    }
+    function handleDistrict(e){
+        e.preventDefault();
+        let province_id = $("#province").val();
+        let district_id = $("#district").val();
+        let streetWrapper = '';
+        let wardWrapper = '';
+        console.log(district_id);
+        $.ajax({
+            type:'GET',
+            url:"{{asset("/local")}}?prov_id="+province_id+"&district_id=" + district_id,
+            success:function(data){
+                var streets = data.district.streets;
+                var wards = data.district.wards;
+                for (let i =0 ; i < streets.length ; i++){
+                    streetWrapper += `
+                       <option value="${streets[i].id}">${streets[i].prefix} ${streets[i].name}</option>
+                    `
+                }
+                for (let i =0 ; i < wards.length ; i++){
+                    wardWrapper += `
+                       <option value="${wards[i].id}">${wards[i].prefix} ${wards[i].name}</option>
+                    `
+                }
+                $("#street").html(streetWrapper);
+                $("#ward").html(wardWrapper);
+            }
+        });
+    }
+</script>
 </html>

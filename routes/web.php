@@ -17,3 +17,4 @@ Route::get('/',[\App\Http\Controllers\WebController::class,'index'] );
 Route::post('/create-group',[\App\Http\Controllers\WebController::class,'createGroup']);
 Route::post('/create-staff',[\App\Http\Controllers\WebController::class,'createStaff']);
 Route::post('/create-role',[\App\Http\Controllers\WebController::class,'createRole']);
+Route::get('/local',[\App\Http\Controllers\WebController::class,'getLocal']);
