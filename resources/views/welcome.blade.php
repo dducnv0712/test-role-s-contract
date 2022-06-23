@@ -499,20 +499,20 @@
                         </div>
                         <div class="mb-3">
                             <label for="district">Quận / Huyện</label>
-                            <select onchange="handleDistrict(event)" class="form-select" id="district" aria-label="Default select example">
+                            <select disabled onchange="handleDistrict(event)" class="form-select" id="district" aria-label="Default select example">
                                 <option selected>Vui lòng chọn Quận / Huyện</option>
                             </select>
                         </div>
                         <div class="row mb-3">
                             <div class="col-6">
                                 <label for="ward">Xã / Phường</label>
-                                <select class="form-select mb-3" id="ward" aria-label="Default select example">
+                                <select disabled class="form-select mb-3" id="ward" aria-label="Default select example">
                                     <option selected>Vui lòng chọn Xã / Phường</option>
                                 </select>
                             </div>
                             <div class="col-6">
                                 <label for="street">Đường / Phố</label>
-                                <select class="form-select mb-3" id="street" aria-label="Default select example">
+                                <select disabled class="form-select mb-3" id="street" aria-label="Default select example">
                                     <option selected>Vui lòng chọn</option>
                                 </select>
                             </div>
@@ -641,6 +641,7 @@
 <script type="text/javascript">
     function getProvince(e){
         e.preventDefault();
+        $("#district").attr("disabled",true)
         let province_id = $("#province").val();
         let districtWrapper = '';
         $.ajax({
@@ -654,11 +655,14 @@
                     `
                 }
                 $("#district").html(districtWrapper);
+                $("#district").attr("disabled",false)
             }
         });
     }
     function handleDistrict(e){
         e.preventDefault();
+        $("#street").attr("disabled",true)
+        $("#ward").attr("disabled",true)
         let province_id = $("#province").val();
         let district_id = $("#district").val();
         let streetWrapper = '';
@@ -682,6 +686,8 @@
                 }
                 $("#street").html(streetWrapper);
                 $("#ward").html(wardWrapper);
+                $("#street").attr("disabled",false)
+                $("#ward").attr("disabled",false)
             }
         });
     }
