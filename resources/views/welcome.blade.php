@@ -642,6 +642,8 @@
     function getProvince(e){
         e.preventDefault();
         $("#district").attr("disabled",true)
+        $("#street").attr("disabled",true)
+        $("#ward").attr("disabled",true)
         let province_id = $("#province").val();
         let districtWrapper = '';
         $.ajax({
