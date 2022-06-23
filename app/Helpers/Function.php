@@ -1,10 +1,10 @@
 <?php
 if (!function_exists('staffList')) {
-    function staffList($staffs,$group_id, $parent_id = 0, $sub = true, $char = '')
+    function staffList($staffs, $parent_id = 0, $sub = true, $char = '')
     {
         $staff_child = array();
         foreach ($staffs as $key => $item) {
-            if ($item['parent_id'] == $parent_id && $item->group_id == $group_id ) {
+            if ($item['parent_id'] == $parent_id ) {
                 $staff_child[] = $item;
                 unset($staffs[$key]);
             }
@@ -15,10 +15,10 @@ if (!function_exists('staffList')) {
             foreach ($staff_child as $item) {
                 echo ' <li>';
                 echo '<a href="#">' . $char . $item->name . '</a>';
-                staffList($staffs,$group_id, $item->id, false, $char . '|--');
+                staffList($staffs, $item->id, false, $char . '|--');
                 echo '</li>';
             }
-            echo "</ul>";
+            echo $sub ? '' :"</ul>";
         }
     }
 }
@@ -28,7 +28,7 @@ if (!function_exists('staffSelect')) {
     {
         foreach ($staffs as $key => $item) {
             // Nếu là chuyên mục con thì hiển thị
-            if ($item->parent_id == $parent_id) {
+            if ($item->parent_id == $parent_id   ) {
                 if ($selected !== 0 && $item->id == $selected) {
                     echo '<option selected value="' . $item->id . '">' . $char . $item->name . ' </option>';
                 } else {

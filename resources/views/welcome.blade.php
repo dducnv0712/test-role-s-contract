@@ -61,6 +61,11 @@
             background-color: rgba(255, 255, 255, var(--bg-opacity))
         }
 
+        table {
+            max-height: 100px;
+            overflow-y: scroll;
+        }
+
         .bg-gray-100 {
             --bg-opacity: 1;
             background-color: #f7fafc;
@@ -405,12 +410,12 @@
 
     <div class="row">
         <div class="col-6">
-            <div class="card">
+            <div class="card mb-3">
                 <div class="card-header">
                     Tạo nhóm
                 </div>
                 <div class="card-body">
-                    <form action="{{url('/create-group')}}" method="post">
+                    <form action="{{url('/create-group')}}" method="post" class="mb-3">
                         @csrf
                         <div class="mb-3">
                             <label for="name" class="form-label">name</label>
@@ -418,6 +423,58 @@
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th scope="col">#ID</th>
+                                <th scope="col">Name</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($group as $item)
+                                <tr>
+                                    <td>{{$item->id}}</td>
+                                    <td>{{$item->name}}</td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="card mb-3">
+                <div class="card-header">
+                    Tạo Role
+                </div>
+                <div class="card-body">
+                    <form action="{{url('/create-role')}}" class="mb-3"
+                          method="post">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="name" class="form-label">name</label>
+                            <input type="text" name="name" class="form-control" id="name" aria-describedby="emailHelp">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th scope="col">#ID</th>
+                                <th scope="col">Name</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($roles as $item)
+                                <tr>
+                                    <td>{{$item->id}}</td>
+                                    <td>{{$item->name}}</td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -428,7 +485,7 @@
                     Tạo Nhân Viên
                 </div>
                 <div class="card-body">
-                    <form action="{{url('/create-staff  ')}}" method="post">
+                    <form action="{{url('/create-staff  ')}}" class="mb-3" method="post">
                         @csrf
                         <div class="mb-3">
                             <label for="name" class="form-label">Tên</label>
@@ -436,7 +493,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="name" class="form-label">Nhóm</label>
-                            <select name="group" class="form-select" aria-label="Default select example">
+                            <select name="phongban[]" class="form-select" multiple aria-label="Default select example">
                                 @foreach($group as $group_item)
                                     <option value="{{$group_item->id}}">{{$group_item->name}}</option>
                                 @endforeach
@@ -446,18 +503,53 @@
                             <label for="name" class="form-label">Chọn người quản lý</label>
                             <select name="parent_id" class="form-select" aria-label="Default select example">
                                 <option value="0">Khum có</option>
-                                {{staffSelect($staffSelect)}}
+                                {{staffSelect($staffRoleAdmin)}}
                             </select>
                         </div>
                         <div class="mb-3">
                             <label for="name" class="form-label">Vai trò</label>
-                            <select name="role" class="form-select">
-                                <option value="2">Quản lý</option>
-                                <option selected value="1">Nhân viên</option>
+                            <select name="roles[]" class="form-select" multiple aria-label="Default select example">
+                                @foreach($roles as $group_item)
+                                    <option value="{{$group_item->id}}">{{$group_item->name}}</option>
+                                @endforeach
                             </select>
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th scope="col">#ID</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Role</th>
+                                <th scope="col">Phong Ban</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($staff as $item)
+                                <tr>
+                                    <td>{{$item->id}}</td>
+                                    <td>{{$item->name}}</td>
+                                    <td>
+                                        <ul>
+                                            @foreach($item->role as $item_role)
+                                                <li>{{$item_role->name}}</li>
+                                            @endforeach
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        <ul>
+                                            @foreach($item->phongban as $item_phongban)
+                                                <li>{{$item_phongban->name}}</li>
+                                            @endforeach
+                                        </ul>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -465,10 +557,12 @@
     <div class="mt-4 border p-6">
         <ul>
             @foreach($group as $item)
+
+                {{--            {{dump($staff)}}--}}
                 <li>
                     <h6 class="text-danger">{{$item->name}}</h6>
                     <ul>
-                        {{staffList($staff,$item->id)}}
+                       {{staffList($item->nhanvien)}}
                     </ul>
                 </li>
             @endforeach
