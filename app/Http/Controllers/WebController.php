@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\District;
 use App\Models\Phongban;
 use App\Models\Nhanvien;
-use App\Models\Province;
 use App\Models\Role;
 use Illuminate\Http\Request;
 
@@ -20,11 +18,8 @@ class WebController extends Controller
         $staffSelect = Nhanvien::all();
         $group = Phongban::with('nhanvien')->get();
         $roles = Role::all();
-        $province = Province::with('district','street','ward')->get();
-        $district = District::with("province")->get();
         $path = storage_path() . "/json/local.json"; // ie: /var/www/laravel/app/storage/json/filename.json
         $json = json_decode(file_get_contents($path), true);
-
 //        dd($json);
         return view('welcome',
             [
