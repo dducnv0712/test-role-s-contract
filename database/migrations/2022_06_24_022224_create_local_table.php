@@ -13,12 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('phongban', function (Blueprint $table) {
+        Schema::create('local', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('province');
-            $table->string('district');
-            $table->string('ward');
+            $table->string("prefix")->nullable();
+            $table->string('type');
+            $table->string('code')->nullable();
+            $table->bigInteger('parent_id')->default(0);
             $table->timestamps();
         });
     }
@@ -30,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('phongban');
+        Schema::dropIfExists('local');
     }
 };

@@ -423,7 +423,36 @@
                         @csrf
                         <div class="mb-3">
                             <label for="name" class="form-label">name</label>
-                            <input type="text" name="name" class="form-control" id="name" aria-describedby="emailHelp">
+                            <input required type="text" name="name" class="form-control" id="name" aria-describedby="emailHelp">
+                        </div>
+                        <div class="mb-3">
+                            <label for="province">Tỉnh / Thành phố</label>
+                            <select required onchange="getProvinceGroup(event)" name="province" id="province-group" class="form-select" aria-label="Default select example">
+                                <option selected>Vui lòng chọn Tỉnh / Thành phố</option>
+                                @foreach($province as $province_item)
+                                    <option value="{{$province_item['id']}}">{{$province_item['name']}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label  for="district">Huyện / Quận</label>
+                            <select required disabled onchange="handleDistrictGroup(event)" name="district" class="form-select" id="district-group" aria-label="Default select example">
+                                <option selected>Vui lòng chọn Quận / Huyện</option>
+                            </select>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <label for="ward">Xã / Phường</label>
+                                <select required disabled class="form-select mb-3" name="ward" id="ward-group" aria-label="Default select example">
+                                    <option selected>Vui lòng chọn Xã / Phường</option>
+                                </select>
+                            </div>
+                            {{--                            <div class="col-6">--}}
+                            {{--                                <label for="street">Đường / Phố</label>--}}
+                            {{--                                <select disabled class="form-select mb-3" id="street" aria-label="Default select example">--}}
+                            {{--                                    <option selected>Vui lòng chọn</option>--}}
+                            {{--                                </select>--}}
+                            {{--                            </div>--}}
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
@@ -432,7 +461,10 @@
                             <thead>
                             <tr>
                                 <th scope="col">#ID</th>
-                                <th scope="col">Name</th>
+                                <th >Tên</th>
+                                <th>Tỉnh / Thành phố</th>
+                                <th>Huyện / Quận</th>
+                                <th>Xã / Phường</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -440,6 +472,9 @@
                                 <tr>
                                     <td>{{$item->id}}</td>
                                     <td>{{$item->name}}</td>
+                                    <td>{{$item->province}}</td>
+                                    <td>{{$item->district}}</td>
+                                    <td>{{$item->ward}}</td>
                                 </tr>
                             @endforeach
                             </tbody>
@@ -457,7 +492,7 @@
                         @csrf
                         <div class="mb-3">
                             <label for="name" class="form-label">name</label>
-                            <input type="text" name="name" class="form-control" id="name" aria-describedby="emailHelp">
+                            <input required type="text" name="name" class="form-control" id="name" aria-describedby="emailHelp">
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
@@ -481,47 +516,46 @@
                     </div>
                 </div>
             </div>
-            <div class="card mb-3">
-                <div class="card-header">
-                     Địa Chỉ
-                </div>
-                <div class="card-body">
-                    <form action="{{url('/create-role')}}" class="mb-3"
-                          method="post">
-                        <div class="mb-3">
-                            <label for="province">Tỉnh / Thành phố</label>
-                            <select onchange="getProvince(event)" id="province" class="form-select" aria-label="Default select example">
-                                <option selected>Vui lòng chọn Tỉnh / Thành phố</option>
-                                @foreach($province as $province_item)
-                                    <option value="{{$province_item['id']}}">{{$province_item['name']}}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="district">Quận / Huyện</label>
-                            <select disabled onchange="handleDistrict(event)" class="form-select" id="district" aria-label="Default select example">
-                                <option selected>Vui lòng chọn Quận / Huyện</option>
-                            </select>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-6">
-                                <label for="ward">Xã / Phường</label>
-                                <select disabled class="form-select mb-3" id="ward" aria-label="Default select example">
-                                    <option selected>Vui lòng chọn Xã / Phường</option>
-                                </select>
-                            </div>
-                            <div class="col-6">
-                                <label for="street">Đường / Phố</label>
-                                <select disabled class="form-select mb-3" id="street" aria-label="Default select example">
-                                    <option selected>Vui lòng chọn</option>
-                                </select>
-                            </div>
-                        </div>
-
-
-                    </form>
-                </div>
-            </div>
+{{--            <div class="card mb-3">--}}
+{{--                <div class="card-header">--}}
+{{--                     Địa Chỉ--}}
+{{--                </div>--}}
+{{--                <div class="card-body">--}}
+{{--                    <form  class="mb-3"--}}
+{{--                          method="post">--}}
+{{--                        <div class="mb-3">--}}
+{{--                            <label for="province">Tỉnh / Thành phố</label>--}}
+{{--                            <select onchange="getProvince(event)" name="province" id="province" class="form-select" aria-label="Default select example">--}}
+{{--                                <option selected>Vui lòng chọn Tỉnh / Thành phố</option>--}}
+{{--                                @foreach($province as $province_item)--}}
+{{--                                    <option value="{{$province_item['id']}}">{{$province_item['name']}}</option>--}}
+{{--                                @endforeach--}}
+{{--                            </select>--}}
+{{--                        </div>--}}
+{{--                        <div class="mb-3">--}}
+{{--                            <label for="district">Quận / Huyện</label>--}}
+{{--                            <select disabled onchange="handleDistrict(event)" name="district" class="form-select" id="district" aria-label="Default select example">--}}
+{{--                                <option selected>Vui lòng chọn Quận / Huyện</option>--}}
+{{--                            </select>--}}
+{{--                        </div>--}}
+{{--                        <div class="row mb-3">--}}
+{{--                            <div class="col-12">--}}
+{{--                                <label for="ward">Xã / Phường</label>--}}
+{{--                                <select disabled class="form-select mb-3" name="ward" id="ward" aria-label="Default select example">--}}
+{{--                                    <option selected>Vui lòng chọn Xã / Phường</option>--}}
+{{--                                </select>--}}
+{{--                            </div>--}}
+{{--                            <div class="col-6">--}}
+{{--                                <label for="street">Đường / Phố</label>--}}
+{{--                                <select disabled class="form-select mb-3" id="street" aria-label="Default select example">--}}
+{{--                                    <option selected>Vui lòng chọn</option>--}}
+{{--                                </select>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
+{{--                        <button type="button" onclick="handleClick(event)" class="btn btn-primary">Submit</button>--}}
+{{--                    </form>--}}
+{{--                </div>--}}
+{{--            </div>--}}
         </div>
         <div class="col-6">
 
@@ -534,11 +568,11 @@
                         @csrf
                         <div class="mb-3">
                             <label for="name" class="form-label">Tên</label>
-                            <input type="text" name="name" class="form-control" id="name" aria-describedby="emailHelp">
+                            <input required type="text" name="name" class="form-control" id="name" aria-describedby="emailHelp">
                         </div>
                         <div class="mb-3">
                             <label for="name" class="form-label">Nhóm</label>
-                            <select name="phongban[]" class="form-select" multiple aria-label="Default select example">
+                            <select required name="phongban[]" class="form-select" multiple aria-label="Default select example">
                                 @foreach($group as $group_item)
                                     <option value="{{$group_item->id}}">{{$group_item->name}}</option>
                                 @endforeach
@@ -546,18 +580,47 @@
                         </div>
                         <div class="mb-3">
                             <label for="name" class="form-label">Chọn người quản lý</label>
-                            <select name="parent_id" class="form-select" aria-label="Default select example">
+                            <select required name="parent_id" class="form-select" aria-label="Default select example">
                                 <option value="0">Khum có</option>
                                 {{staffSelect($staffRoleAdmin)}}
                             </select>
                         </div>
                         <div class="mb-3">
                             <label for="name" class="form-label">Vai trò</label>
-                            <select name="roles[]" class="form-select" multiple aria-label="Default select example">
+                            <select required name="roles[]" class="form-select" multiple aria-label="Default select example">
                                 @foreach($roles as $group_item)
                                     <option value="{{$group_item->id}}">{{$group_item->name}}</option>
                                 @endforeach
                             </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="province">Tỉnh / Thành phố</label>
+                            <select required onchange="getProvinceStaff(event)" name="province" id="province-staff" class="form-select" aria-label="Default select example">
+                                <option selected>Vui lòng chọn Tỉnh / Thành phố</option>
+                                @foreach($province as $province_item)
+                                    <option value="{{$province_item['id']}}">{{$province_item['name']}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="district">Huyện / Quận</label>
+                            <select required disabled onchange="handleDistrictStaff(event)" name="district" class="form-select" id="district-staff" aria-label="Default select example">
+                                <option selected>Vui lòng chọn Quận / Huyện</option>
+                            </select>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <label for="ward">Xã / Phường</label>
+                                <select required disabled class="form-select mb-3" name="ward" id="ward-staff" aria-label="Default select example">
+                                    <option selected>Vui lòng chọn Xã / Phường</option>
+                                </select>
+                            </div>
+                            {{--                            <div class="col-6">--}}
+                            {{--                                <label for="street">Đường / Phố</label>--}}
+                            {{--                                <select disabled class="form-select mb-3" id="street" aria-label="Default select example">--}}
+                            {{--                                    <option selected>Vui lòng chọn</option>--}}
+                            {{--                                </select>--}}
+                            {{--                            </div>--}}
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
@@ -569,6 +632,9 @@
                                 <th scope="col">Name</th>
                                 <th scope="col">Role</th>
                                 <th scope="col">Phong Ban</th>
+                                <th>Tỉnh / Thành phố</th>
+                                <th>Huyện / Quận</th>
+                                <th>Xã / Phường</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -590,6 +656,9 @@
                                             @endforeach
                                         </ul>
                                     </td>
+                                    <td>{{$item->province}}</td>
+                                    <td>{{$item->district}}</td>
+                                    <td>{{$item->ward}}</td>
                                 </tr>
                             @endforeach
                             </tbody>
@@ -624,27 +693,47 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
     $(document).ready(function() {
-        $('#province').select2({
+        $('#province-group').select2({
             theme: 'bootstrap-5'
         });
-        $('#district').select2({
+        $('#district-group').select2({
             theme: 'bootstrap-5'
         });
-        $('#ward').select2({
+        $('#ward-group').select2({
             theme: 'bootstrap-5'
         });
-        $('#street').select2({
+        $('#street-group').select2({
+            theme: 'bootstrap-5'
+        });
+        $('#province-staff').select2({
+            theme: 'bootstrap-5'
+        });
+        $('#district-staff').select2({
+            theme: 'bootstrap-5'
+        });
+        $('#ward-staff').select2({
+            theme: 'bootstrap-5'
+        });
+        $('#street-staff').select2({
             theme: 'bootstrap-5'
         });
     });
 </script>
 <script type="text/javascript">
-    function getProvince(e){
+    function handleClick(e){
         e.preventDefault();
-        $("#district").attr("disabled",true)
-        $("#street").attr("disabled",true)
-        $("#ward").attr("disabled",true)
-        let province_id = $("#province").val();
+           var province = $("#province>option:selected").text();
+           var dis_text = $("#district>option:selected").text();
+           var street =  $("#street>option:selected").text();
+           var wards = $("#ward>option:selected").text();
+           alert(province + " - " +dis_text +  " - " + street + " - " + wards)
+    }
+    function getProvinceGroup(e){
+        e.preventDefault();
+        $("#district-group").attr("disabled",true)
+        $("#street-group").attr("disabled",true)
+        $("#ward-group").attr("disabled",true)
+        let province_id = $("#province-group").val();
         let districtWrapper = '';
         $.ajax({
             type:'GET',
@@ -656,17 +745,17 @@
                        <option value="${districtData[i].id}">${districtData[i].name}</option>
                     `
                 }
-                $("#district").html(districtWrapper);
-                $("#district").attr("disabled",false)
+                $("#district-group").html(districtWrapper);
+                $("#district-group").attr("disabled",false)
             }
         });
     }
-    function handleDistrict(e){
+    function handleDistrictGroup(e){
         e.preventDefault();
-        $("#street").attr("disabled",true)
-        $("#ward").attr("disabled",true)
-        let province_id = $("#province").val();
-        let district_id = $("#district").val();
+        $("#street-group").attr("disabled",true)
+        $("#ward-group").attr("disabled",true)
+        let province_id = $("#province-group").val();
+        let district_id = $("#district-group").val();
         let streetWrapper = '';
         let wardWrapper = '';
         console.log(district_id);
@@ -686,10 +775,64 @@
                        <option value="${wards[i].id}">${wards[i].prefix} ${wards[i].name}</option>
                     `
                 }
-                $("#street").html(streetWrapper);
-                $("#ward").html(wardWrapper);
-                $("#street").attr("disabled",false)
-                $("#ward").attr("disabled",false)
+                $("#street-group").html(streetWrapper);
+                $("#ward-group").html(wardWrapper);
+                $("#street-group").attr("disabled",false)
+                $("#ward-group").attr("disabled",false)
+            }
+        });
+    }
+    function getProvinceStaff(e){
+        e.preventDefault();
+        $("#district-staff").attr("disabled",true)
+        $("#street-staff").attr("disabled",true)
+        $("#ward-staff").attr("disabled",true)
+        let province_id = $("#province-staff").val();
+        let districtWrapper = '';
+        $.ajax({
+            type:'GET',
+            url:"{{asset("/local")}}?prov_id="+province_id,
+            success:function(data){
+                var districtData = data.province.districts
+                for (let i =0 ; i < districtData.length ; i++){
+                    districtWrapper += `
+                       <option value="${districtData[i].id}">${districtData[i].name}</option>
+                    `
+                }
+                $("#district-staff").html(districtWrapper);
+                $("#district-staff").attr("disabled",false)
+            }
+        });
+    }
+    function handleDistrictStaff(e){
+        e.preventDefault();
+        $("#street-staff").attr("disabled",true)
+        $("#ward-staff").attr("disabled",true)
+        let province_id = $("#province-staff").val();
+        let district_id = $("#district-staff").val();
+        let streetWrapper = '';
+        let wardWrapper = '';
+        console.log(district_id);
+        $.ajax({
+            type:'GET',
+            url:"{{asset("/local")}}?prov_id="+province_id+"&district_id=" + district_id,
+            success:function(data){
+                var streets = data.district.streets;
+                var wards = data.district.wards;
+                for (let i =0 ; i < streets.length ; i++){
+                    streetWrapper += `
+                       <option value="${streets[i].id}">${streets[i].prefix} ${streets[i].name}</option>
+                    `
+                }
+                for (let i =0 ; i < wards.length ; i++){
+                    wardWrapper += `
+                       <option value="${wards[i].id}">${wards[i].prefix} ${wards[i].name}</option>
+                    `
+                }
+                $("#street-staff").html(streetWrapper);
+                $("#ward-staff").html(wardWrapper);
+                $("#street-staff").attr("disabled",false)
+                $("#ward-staff").attr("disabled",false)
             }
         });
     }

@@ -10,7 +10,10 @@ class Phongban extends Model
     use HasFactory;
     protected $table ="phongban";
     protected $fillable = [
-        'name'
+        'name',
+        'province',
+        'district',
+        'ward'
     ];
 
     public function nhanvien()

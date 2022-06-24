@@ -12,6 +12,9 @@ class Nhanvien extends Model
     protected $fillable = [
         'name',
         'parent_id',
+        'province',
+        'district',
+        'ward'
     ];
     public function phongban()
     {
