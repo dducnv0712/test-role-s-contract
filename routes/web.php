@@ -19,4 +19,4 @@ Route::post('/create-staff',[\App\Http\Controllers\WebController::class,'createS
 Route::post('/create-role',[\App\Http\Controllers\WebController::class,'createRole']);
 Route::get('/local',[\App\Http\Controllers\WebController::class,'getLocal']);
 Route::get('/insert-local',[\App\Http\Controllers\WebController::class,'insertLocal']);
-    Route::get('/get-local',[\App\Http\Controllers\WebController::class,'getLocalFromDB']);
+Route::get('/get-local',[\App\Http\Controllers\WebController::class,'getLocalFromDB']);

@@ -4,13 +4,16 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Stevebauman\Location\Facades\Location;
 
 class ApiController extends Controller
 {
     public function clientInfo(Request $request){
+//        dd($request->headers->get("sec-ch-ua-platform"));
         return response()->json([
             "ip"=>$request->ip(),
-            "request_info"=>$request
+            'location'=> Location::get($request->ip()),
+            'platform'=>$request->headers->get("sec-ch-ua-platform")
         ],200);
     }
     //
